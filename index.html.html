@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЭЛЕКТРОНИКА-85 // СИСТЕМА</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="screen">
+        <div id="output">
+            <p>СИСТЕМА УПРАВЛЕНИЯ "ПОИСК-1" (v 0.84, 1986 г.)</p>
+            <p>Введите 'help' для списка доступных команд.</p>
+            <br>
+        </div>
+        <div class="input-line">
+            <span>A:\> </span>
+            <input type="text" id="commandInput" autofocus autocomplete="off">
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('commandInput');
+        const output = document.getElementById('output');
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim().toLowerCase();
+                output.innerHTML += `<p>A:\\> ${input.value}</p>`;
+                
+                processCommand(cmd);
+                
+                input.value = '';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        function processCommand(cmd) {
+            let response = '';
+
+            switch(cmd) {
+                case 'help':
+                    response = 'Доступные команды:<br>' +
+                               '- <b>help</b>: справка<br>' +
+                               '- <b>search [запрос]</b>: поиск по базе данных<br>' +
+                               '- <b>clear</b>: очистить экран<br>' +
+                               '- <b>dir</b>: список файлов';
+                    break;
+                case 'dir':
+                    response = 'Файлы не найдены или заблокированы. Нужен уровень доступа 2.';
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    return;
+                default:
+                    if (cmd.startsWith('search ')) {
+                        const query = cmd.replace('search ', '');
+                        response = handleSearch(query);
+                    } else {
+                        response = `Команда "${cmd}" не распознана. Введите 'help'.`;
+                    }
+            }
+
+            output.innerHTML += `<p>${response}</p><br>`;
+        }
+
+        // Логика вашего "своего гугла"
+        function handleSearch(query) {
+            if (query === 'проект заря' || query === 'заря') {
+                return 'РЕЗУЛЬТАТ: Найдена запись #049. Ссылка на шифр: github.com/your-name/secret-page';
+            } else if (query === '1984') {
+                return 'ОШИБКА: Доступ к архиву 1984 года заблокирован администратором.';
+            } else {
+                return `По запросу "${query}" ничего не найдено в советском архиве.`;
+            }
+        }
+    </script>
+</body>
+</html>
